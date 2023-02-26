@@ -1,0 +1,114 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\usepackage{amsmath}
+\usepgfplotslibrary{colormaps}
+\usetikzlibrary{decorations.markings}
+
+\pgfplotsset{compat=newest}
+
+%%%% Differential /x^2stem %%%%%
+\def\xdot{(-y+x^2-y^2)/(1+2*y)^2}
+\def\ydot{x/(1+2*y)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%% First integral %%%%
+\def\firstint{(x^2+y^2)/(1+2*y)}
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+\begin{tikzpicture}[every node/.style={scale=0.85},decorated arrowcirc/.style={
+        postaction={
+            decorate,
+            decoration={
+                markings,
+                mark=at position 0 with {\arrow[red]{stealth}},
+                mark=at position 0.5 with {\arrow[red]{stealth}},
+              }}
+      },decorated arrowline/.style={
+        postaction={
+            decorate,
+            decoration={
+                markings,
+                mark=at position 0.333 with {\arrow[red]{stealth}},
+                mark=at position 0.666 with {\arrow[red]{stealth}},
+              }}
+      }]
+  \begin{axis}[
+      axis lines=middle,
+      xmin=-3,xmax=3,
+      ymin=-3, ymax=3,
+      zmin = 0, zmax = 1, % to prevent a warning
+      view={0}{90},
+      % xlabel = {$x$},
+      % ylabel = {$y$},
+      axis equal image,
+      trig format plots=rad,
+      %colormap/vidris,
+    ]
+    \def\xmax{\pgfkeysvalueof{/pgfplots/xmax}}
+    \def\xmin{\pgfkeysvalueof{/pgfplots/xmin}}
+    \def\ymax{\pgfkeysvalueof{/pgfplots/ymax}}
+    \def\ymin{\pgfkeysvalueof{/pgfplots/ymin}}
+    \addplot3 [
+      opacity = 0.5,
+      point meta={sqrt((\xdot)^2+(\ydot)^2)*(1+2*y)^4},
+      samples=16,
+      domain=\xmin:\xmax,
+      y domain=\xmin:\xmax,
+      quiver={
+          u={\xdot/sqrt((\xdot)^2+(\ydot)^2)},
+          v={\ydot/sqrt((\xdot)^2+(\ydot)^2)},
+          colored = {mapped color},
+          scale arrows=0.2,
+          every arrow/.append style={-stealth}}
+    ] {0};
+    \addplot[
+      samples=10,
+      % samples y=100,
+      domain=\xmin:\xmax,
+      %y domain=\xmin:\xmax,
+      red,
+      decorated arrowline,
+    ] {-1/2};
+    % \addplot3 [
+    %   samples=400,
+    %   samples y=400,
+    %   contour gnuplot={
+    %       levels={0.075},
+    %       labels=false,
+    %       draw color=red,
+    %       handler/.style=smooth,
+    %     }
+    % ] {\firstint};
+    \addplot[thin,mark=*,only marks, mark size=1pt,red] coordinates {
+        (0,0) (0,-1)
+      };
+    % \addplot3 [
+    %   samples=200,
+    %   % samples y=100,
+    %   domain=\xmin:\xmax,
+    %   y domain=\xmin:\xmax,
+    %   contour prepared={
+    %       draw color=red,
+    %       labels=false,
+    %       handler/.style=smooth,
+    %     },
+    %   %decorated arrowcirc,
+    %   % smooth,
+    % ] table {retrat_r2.table};
+    \foreach \i in{-1.75,-1.25,0.075,0.75}{
+        \addplot [
+          samples=200,
+          red,
+          decorated arrowcirc,
+        ] table {\i.dat};
+      }
+    \addplot [
+      samples=200,
+      red,
+      decorated arrowline,
+    ] table {2.dat};
+  \end{axis}
+\end{tikzpicture}
+\end{document}

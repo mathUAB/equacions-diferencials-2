@@ -1,0 +1,76 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\usepackage{amsmath}
+\usepgfplotslibrary{colormaps}
+
+\pgfplotsset{compat=newest}
+
+%%%% Differential system %%%%%
+\def\xdot{-y}
+\def\ydot{x-x^2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%% First integral %%%%
+\def\firstint{y^2/2+x^2/2-x^3/3}
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\begin{tikzpicture}[every node/.style={scale=0.85}]
+  \begin{axis}[
+      axis lines=middle,
+      xmin=-3,xmax=3,
+      ymin=-3, ymax=3,
+      zmin = 0, zmax = 1, % to prevent a warning
+      view={0}{90},
+      xlabel = {$x$},
+      ylabel = {$y$},
+      axis equal image,
+      trig format plots=rad,
+      %colormap/vidris,
+    ]
+    \def\xmax{\pgfkeysvalueof{/pgfplots/xmax}}
+    \def\xmin{\pgfkeysvalueof{/pgfplots/xmin}}
+    \def\ymax{\pgfkeysvalueof{/pgfplots/ymax}}
+    \def\ymin{\pgfkeysvalueof{/pgfplots/ymin}}
+    \addplot3 [
+      opacity = 0.4,
+      point meta={sqrt((\xdot)^2+(\ydot)^2)},
+      samples=30,
+      domain=\xmin:\xmax,
+      y domain=\ymin:\ymax,
+      quiver={
+          % u={\xdot/((\xdot)^2+(\ydot)^2)^(1/2)},
+          % v={\ydot/((\xdot)^2+(\ydot)^2)^(1/2)},
+          u={-y/((y)^2+(x-x^2)^2)^(1/2)},
+          v={(x-x^2)/((y)^2+(x-x^2)^2)^(1/2)},
+          colored = {mapped color},
+          scale arrows=0.2,
+          every arrow/.append style={-stealth}}
+    ] {0};
+    % \addplot3 [
+    %   samples=200,
+    %   samples y=200,
+    %   contour gnuplot={
+    %       levels={0.16667},
+    %       labels=false,
+    %       draw color=red,
+    %       handler/.style=smooth,
+    %     }
+    % ] {\firstint};
+    \addplot3 [
+      samples=200,
+      % samples y=100,
+      domain=\xmin:\xmax,
+      y domain=\xmin:\xmax,
+      contour prepared={
+          draw color=red,
+          labels=false,
+          handler/.style=smooth,
+        },
+    ] table {retrat2h1i6_contourtmp0.table};
+    \addplot[thin,mark=*,only marks, mark size=1pt,red] coordinates {
+        (1,0)
+      };
+  \end{axis}
+\end{tikzpicture}
+\end{document}

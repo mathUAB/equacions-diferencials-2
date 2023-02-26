@@ -1,0 +1,71 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\usepackage{amsmath}
+\usepgfplotslibrary{colormaps}
+
+\pgfplotsset{compat=newest}
+
+%%%% Differential system %%%%%
+\def\xdot{y}
+\def\ydot{-1/x^2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%% First integral %%%%
+\def\firstint{1/x-y^2/2}
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\begin{tikzpicture}[every node/.style={scale=0.85}]
+  \begin{axis}[
+      axis lines=middle,
+      xmin=-4,xmax=4,
+      ymin=-3, ymax=3,
+      zmin = 0, zmax = 1, % to prevent a warning
+      view={0}{90},
+      % xlabel = {$x$},
+      % ylabel = {$y$},
+      axis equal image,
+      trig format plots=rad,
+      %colormap/vidris,
+    ]
+    \def\xmax{\pgfkeysvalueof{/pgfplots/xmax}}
+    \def\xmin{\pgfkeysvalueof{/pgfplots/xmin}}
+    \def\ymax{\pgfkeysvalueof{/pgfplots/ymax}}
+    \def\ymin{\pgfkeysvalueof{/pgfplots/ymin}}
+    \addplot3 [
+      opacity = 0.5,
+      point meta={sqrt((\xdot)^2+(\ydot)^2)},
+      samples=30,
+      domain=\xmin:\xmax,
+      y domain=\xmin:\xmax,
+      quiver={
+          u={\xdot/sqrt((\xdot)^2+(\ydot)^2)},
+          v={\ydot/sqrt((\xdot)^2+(\ydot)^2)},
+          colored = {mapped color},
+          scale arrows=0.2,
+          every arrow/.append style={-stealth}}
+    ] {0};
+    % \addplot3 [
+    %   samples=200,
+    %   samples y=200,
+    %   contour gnuplot={
+    %       levels={-3,-1,-0.4,0,0.5,1},
+    %       labels=false,
+    %       draw color=red,
+    %       handler/.style=smooth,
+    %     }
+    % ] {\firstint};
+    \addplot3 [
+      samples=200,
+      % samples y=100,
+      domain=\xmin:\xmax,
+      y domain=\xmin:\xmax,
+      contour prepared={
+          draw color=red,
+          labels=false,
+          handler/.style=smooth,
+        },
+    ] table {retrat33_2.table};
+  \end{axis}
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,407 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[catalan]{babel}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{physics}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[a4paper,left=2cm,top=3cm,right=2cm,bottom=3cm]{geometry} 
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.markings}
+\usepackage{comment}
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{colormaps}
+
+\newtheorem{thm}{Teorema}
+\newcommand{\R}{\mathbb R}
+\newcommand{\RA}{\Rightarrow}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\RL}{\Leftrightarrow}
+\newcommand{\CC}{\ensuremath{\mathbb{C}}}
+\newcommand{\RR}{\ensuremath{\mathbb{R}}}
+\renewcommand{\div}{\operatorname{\mathbf{div}}} % divergence
+\tikzset{decorated arrowsb/.style={
+		postaction={
+			decorate,
+			decoration={
+				markings,
+				mark=between positions 0.49 and 0.51 step 15mm with {\arrow[black]{stealth}}}
+		}
+}}
+\tikzset{decorated arrowsbl/.style={
+		postaction={
+			decorate,
+			decoration={
+				markings,
+				mark=between positions 0.49 and 0.51 step 15mm with {\arrow[blue]{stealth}}}
+		}
+}}
+
+\title{Equacions diferencials i Modelització II \\ Seminari II}
+\author{Víctor Ballester Ribó, Arturo Castaño Gallardo, Enric Garriga Sànchez}
+\date{Maig 2022}
+
+\begin{document}
+\maketitle 
+\section*{Problema 1}
+Considerem el següent sistema diferencial:
+\begin{equation}
+  \begin{cases}
+    \dot{x}=x(1-x-ay):=P(x,y) \\
+    \dot{y}=y(1-y-bx):=Q(x,y) 
+  \end{cases}
+  \text{ on } \ a>0, \ b>0
+\end{equation}
+\subsubsection*{Apartat a)}
+D'entrada ens interessa trobar el retrat de fase d'aquest sistema en el primer quadrant de $\R^2$ considerant $a \in \R_+^*\backslash\{1\}, \ b \in \R_+^*\backslash\{1\}$. Per això comencem buscant els punts crítics del sistema, és a dir, cal resoldre: 
+\begin{equation}
+  \begin{cases}
+    \dot{x}=x(1-x-ay) =0 \\
+    \dot{y}=y(1-y-bx)=0
+  \end{cases}
+\end{equation}
+Aleshores:
+\begin{itemize}
+  \item Si $x=0 \implies y=0$ o $y=1 \implies$ els punts $(0,0)$ i $(0,1)$ són crítics, pertanyent al primer quadrant.
+  \item Si $y=0 \implies x=0$ o $x=1 \implies (1,0)$ també és singular i pertany al primer quadrant.
+  \item Si
+        $\begin{cases}
+            1-x-ay=0 \\
+            1-y-bx=0
+          \end{cases}\iff
+          \begin{cases}
+            y=\frac{1-x}{a} \\
+            y=1-bx
+          \end{cases}$ i
+        igualant les equacions obtenim:
+        $$ 1-bx=\frac{1-x}{a} \iff x=\frac{1-a}{1-ba} \implies y=\frac{1-b}{1-ba}$$
+        Per tant, $p:=(\frac{1-a}{1-ab}, \frac{1-b}{1-ab})$ és l'últim punt crític. Observem que per trobar aquest últim punt hem suposat $ab\neq1$. En el cas $ab=1$ (i $a\neq1\neq b$) aquest punt no existeix perquè el sistema d'equacions d'on surt és incompatible.
+        \\Resumint, hem trobat els següents 4 punts crítics:
+        $$ (0,0)\qquad(1,0)\qquad(0,1)\qquad p=\left(\frac{1-a}{1-ab}, \frac{1-b}{1-ab}\right)$$
+        Ara bé, quan és que $p$ es troba al primer quadrant? És a dir, volem que $\frac{1-a}{1-ab}>0$ i $\frac{1-b}{1-ab}>0$ alhora. Això només succeeix quan $a>1$ i $b>1$ a la vegada, o $a<1$ i $b<1$ a la vegada.  
+\end{itemize}
+
+\noindent Per tant, com que ja tenim els punts singulars del sistema, podem estudiar els seus retrats de fase locals. Per això, calculem la matriu jacobiana del sistema:
+\begin{equation}
+  J(x,y)=
+  \begin{pmatrix}
+    1-2x-ay & -ax      \\
+    -by     & 1-2y-bx 
+  \end{pmatrix}
+\end{equation}
+Mirem ara $J(x,y)$ avaluada als diferents punts crítics per tal de determinar (gràcies al teorema de Hartman) el comportament local de cada punt crític:
+\begin{itemize}
+  \item Per $(0,0)$ : $ J(0,0)=\begin{pmatrix}
+            1 & 0  \\
+            0 & 1 
+          \end{pmatrix} \implies $ $\sigma(J(0,0))=\{1,1\} \implies $ Node repulsor
+  \item Per $(0,1): \ J(0,1)=\begin{pmatrix}
+            1-a & 0  \\
+            -b  & -1
+          \end{pmatrix} \implies $ $\sigma(J(0,1))=\{1-a, -1\}\implies\begin{cases}
+            \text{Node atractor} & \text{si } a>1 \\
+            \text{Punt de sella} & \text{si } a<1
+          \end{cases}$
+        % Si $a>1 \implies$ node atractor; si $a<1 \implies$ sella
+  \item Per $(1,0): \ J(1,0)=\begin{pmatrix}
+            -1 & -a   \\
+            0  & 1-b 
+          \end{pmatrix} \implies $ $\sigma(J(1,0))=\{-1, 1-b\}
+          \implies\begin{cases}
+            \text{Node atractor} & \text{si } b>1 \\
+            \text{Punt de sella} & \text{si } b<1
+          \end{cases}$
+        %Si $b>1 \implies$ node atractor; si $b<1 \implies$ sella 
+  \item Pel punt $p: \ J(p)=\begin{pmatrix}
+            \frac{1-a}{ab-1}    & \frac{a(1-a)}{ab-1} \\\\
+            \frac{b(1-b)}{ab-1} & \frac{1-b}{ab-1}
+          \end{pmatrix} \implies$ $\sigma(J(p))=\displaystyle \left\lbrace -1, \frac{(a-1)(b-1)}{ab-1}\right\rbrace $. \vspace{2mm}\\ Ara bé, com ja hem dit anteriorment, $p$ només es troba al primer quadrant si $a,b>1$ o $a,b<1$. \\Estudiem aquests casos:
+        $\begin{cases}
+            a,b>1 & \implies \frac{(a-1)(b-1)}{ab-1}>0 \implies\text{ Punt de sella } \\
+            a,b<1 & \implies \frac{(a-1)(b-1)}{ab-1}<0 \implies\text{ Node atractor }
+          \end{cases}$
+\end{itemize}
+% \begin{itemize}
+%   \item Per $(0,0)$ : $ J(0,0)=\begin{pmatrix}
+%             1 & 0  \\
+%             0 & 1 
+%           \end{pmatrix} \implies $ Vaps(0,0)=$\{1\} \implies $ Node repulsor
+%   \item Per $(0,1): \ J(0,1)=\begin{pmatrix}
+%             1-a & 0  \\
+%             -b  & -1
+%           \end{pmatrix} \implies $ Vaps(0,1)=$\{1-a, -1\}\implies\begin{cases}
+%             \text{Node atractor} & \text{si } a>1 \\
+%             \text{Punt de sella} & \text{si } a<1
+%           \end{cases}$
+%         % Si $a>1 \implies$ node atractor; si $a<1 \implies$ sella
+%   \item Per $(1,0): \ J(1,0)=\begin{pmatrix}
+%             -1 & -a   \\
+%             0  & 1-b 
+%           \end{pmatrix} \implies $ Vaps(1,0)=$\{-1, 1-b\}
+%           \implies\begin{cases}
+%             \text{Node atractor} & \text{si } b>1 \\
+%             \text{Punt de sella} & \text{si } b<1
+%           \end{cases}$
+%         %Si $b>1 \implies$ node atractor; si $b<1 \implies$ sella 
+%   \item Pel punt $p: \ J(p)=\begin{pmatrix}
+%             \frac{1-a}{ab-1}    & \frac{a(1-a)}{ab-1} \\\\
+%             \frac{b(1-b)}{ab-1} & \frac{1-b}{ab-1}
+%           \end{pmatrix} \implies$ Vaps(p)=$\displaystyle \left\lbrace -1, \frac{(a-1)(b-1)}{ab-1}\right\rbrace $. \vspace{2mm}\\ Ara bé, com ja hem dit, $p$ només es troba al primer quadrant si $a,b>1$ o $a,b<1$. \\Estudiem aquests casos:
+%         $\begin{cases}
+%             a,b>1 & \implies \frac{(a-1)(b-1)}{ab-1}>0 \implies\text{ Sella }         \\
+%             a,b<1 & \implies \frac{(a-1)(b-1)}{ab-1}<0 \implies\text{ Node Atractor }
+%           \end{cases}$
+% \end{itemize}
+Per tant, ja coneixem els comportaments locals dels punts crítics en funció dels diferents valors de $a$ i $b$. A més, les rectes $y=0$ i $x=0$ són invariants, ja que anu\lgem en $\dot{y}$ i $\dot{x}$ respectivament i també ho és la recta unint l'origen amb $p$. En efecte, aquesta recta és $f(x,y)=(1-a)y-(1-b)x=0$ (ja que l'origen i $p$ verifiquen aquesta igualtat) i $f(x,y)$ satisfà:
+\begin{equation*}
+  \begin{split}
+    \frac{\partial f}{\partial x}P+\frac{\partial f}{\partial y}Q&=(b-1)x(1-x-ay)+(1-a)y(1-y-bx)\\
+    &=(b-1)x\left(1-x-y-(a-1)y\right)+(1-a)y\left(1-y-x-(b-1)x\right)\\
+    &=\big[(b-1)x+(1-a)y\big](1-x-y)\underbrace{-(b-1)x(a-1)y+(a-1)y(b-1)x}_{0}\\
+    &=f(x)(1-x-y)
+  \end{split}
+\end{equation*}
+Per tant, $f(x,y)=0$ és invariant. \\
+Estudiem ara si el sistema pot tenir o no òrbites periòdiques contingudes en el primer quadrant. Si n'hi hagués alguna, aquesta hauria de rodejar un punt d'equilibri. Com que estem demanant que l'òrbita estigui totalment continguda al primer quadrant el punt d'equilibri en qüestió només pot ser $p$ (quan aquest estigui al primer quadrant, si no ja no en podem tenir d'òrbites periòdiques). Però quan $p$ és al primer quadrant, tenim la recta invariant $f(x,y)$ que hauria de tallar a aquesta suposada òrbita periòdica creant així un punt crític en el punt de tall de les dues corbes invariants, cosa que contradiu el fet que una de les dues òrbites sigui periòdica perquè aquesta no pot tenir punts crítics en la seva traça. Per tant, el sistema no té òrbites periòdiques contingudes en el primer quadrant per cap valor de $a$, $b$ estudiats.\\
+Ara considerem el punt $(1/2,0)$ i avaluem el camp en aquest punt. Obtenim que $P(1/2,0)=1/4>0$ i $Q(1/2,0)=0$. Per tant, el camp anirà cap a la direcció de l'eix $x$ positiu. Llavors per continuïtat de les solucions respecte condicions inicials i pel conegut comportament local dels punts crítics ja podem deduir el retrat de fase global en cada cas. Per tal de graficar els retrats de fase, considerem quatre casos particulars de valors $a$ i $b$, que verifiquin les quatre situacions possibles: $a, b>1$; $a,b<1$; $a>1$ i $b<1$; $a<1$ i $b>1$. Els resultats són els següents:
+\begin{comment}
+\begin{center}
+  \begin{tikzpicture}[scale=2.4]
+    \draw (0,0)-- (0,3) node[above]{\tiny{$x=0$}};
+    \draw (0,0)--(3,0) node[below]{\tiny{$y=0$}};
+    \node at (0,0) {\textbullet};
+    \node[below right] at (0,0){\tiny{$(0,0)$}};
+    \node at (1,0) {\textbullet};
+    \node[below right] at (1,0){\tiny{$(1,0)$}};
+    \node at (0,1) {\textbullet};
+    \node[below right] at (0,1){\tiny{$(0,1)$}};
+    \node at (0.5,0.25) {\textbullet};
+    \node[below right] at (2,1.5){\tiny{$(a=2,b=1.5)$}};
+    
+    \draw[very thick, color=black, decorated arrowsb] (0, 0)--(1,0);
+    \draw[very thick, color=black, decorated arrowsb] (3, 0)--(1,0);
+    \draw[very thick, color=black, decorated arrowsb] (0, 0)--(0,1);
+    \draw[very thick, color=black, decorated arrowsb] (0, 3)--(0,1);
+    \draw[very thick, color=black, decorated arrowsb] (0, 0)--(0.5, 0.25);
+    \draw[very thick, color=black, decorated arrowsb] (3, 3/2)--(0.5,1/4);
+    \draw[very thick, color=black, decorated arrowsb] (0, 0)--(0.5, 3/8);
+    
+  \end{tikzpicture}
+\end{center}
+
+Per $a=2>1, b=0.5<1$:
+\begin{center}
+  \begin{tikzpicture}[scale=2.4]
+    \draw (0,0)-- (0,3) node[above]{\tiny{$x=0$}};
+    \draw (0,0)--(3,0) node[below]{\tiny{$y=0$}};
+    \node at (0,0) {\textbullet};
+    \node[below right] at (0,0){\tiny{$(0,0)$}};
+    \node at (1,0) {\textbullet};
+    \node[below right] at (1,0){\tiny{$(1,0)$}};
+    \node at (0,1) {\textbullet};
+    \node[below right] at (0,1){\tiny{$(0,1)$}};
+    
+    \draw[very thick, color=black, decorated arrowsb] (0, 0)--(1,0);
+    \draw[very thick, color=black, decorated arrowsb] (3, 0)--(1,0);
+    \draw[very thick, color=black, decorated arrowsb] (0, 0)--(0,1);
+    \draw[very thick, color=black, decorated arrowsb] (0, 3)--(0,1);
+    \draw[very thick, color=black, decorated arrowsb] (0, 0)--(0.5, 0.25);
+    
+    %\addplot table {a+b+curve1.dat};
+    
+  \end{tikzpicture}
+\end{center}
+\end{comment}
+\begin{figure}[!ht]
+  \centering
+  \begin{subfigure}{0.47\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{a+b+.png}
+    \caption{Retrat de fase del sistema en el cas particular $a=2$ i $b=1.5$}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.47\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{a-b-.png}
+    \caption{Retrat de fase del sistema en el cas partícular $a=0.7$ i $b=0.2$}
+  \end{subfigure}
+\end{figure}
+\begin{figure}[!ht]
+  \begin{subfigure}{0.47\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{a+b-.png}
+    \caption{Retrat de fase del sistema en el cas partícular $a=1.3$ i $b=0.8$}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.47\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{a-b+.png}
+    \caption{Retrat de fase del sistema en el cas partícular $a=0.7$ i $b=1.8$}
+  \end{subfigure}
+\end{figure}
+% \begin{figure}[h]
+%   \begin{center}
+%     \includegraphics[scale=0.43]{a+b+.png}
+%     \caption{Retrat de fase del sistema en el cas particular $a=2$ i $b=1.5$}
+%   \end{center}
+% \end{figure}
+% \begin{figure}
+%   \begin{center}
+%     \includegraphics[scale=0.43]{a-b-.png}
+%     \caption{Retrat de fase del sistema en el cas partícular $a=0.7$ i $b=0.2$}
+%   \end{center}
+% \end{figure}
+% \begin{figure}
+%   \begin{center}
+%     \includegraphics[scale=0.43]{a+b-.png}
+%     \caption{Retrat de fase del sistema en el cas partícular $a=1.3$ i $b=0.8$}
+%   \end{center}
+% \end{figure}
+
+% \begin{figure}
+%   \begin{center}
+%     \includegraphics[scale=0.43]{a-b+.png}
+%     \caption{Retrat de fase del sistema en el cas partícular $a=0.7$ i $b=1.8$}
+%   \end{center}
+% \end{figure}
+\newpage
+\subsubsection*{Apartat b)}
+
+Ara considerem que $x$ i $y$ representen les poblacions de dues espècies. Fixem-nos que els sistemes d'equacions de les dues variables està acoblat, és a dir, que les dues poblacions interaccionen entre elles. Com es podria interpretar aquesta interacció? Depèn dels paràmetres $a$ i $b$ escollits. Ara bé, en tots els casos, el fet que a les rectes $y=0$ i $x=0$ els punts $(1,0)$ i $(0,1)$ respectivament siguin atractors de les òrbites situades exclusivament sobre aquestes rectes prové del fet que la quantitat de recursos en un territori és limitada i, per tant, no hi pot haver una població i\lgem imitada d'una mateixa espècie, encara que sigui l'única considerada.
+\par
+Considerem primer el cas $a, b>1$: en aquesta situació veiem que els punts d'equilibri $(1,0)$ i $(0,1)$ són atractors. Això ens indica que les dues espècies no poden conviure en equilibri en un mateix hàbitat simultàniament durant un llarg període de temps. Això podria ser el cas, per exemple, de dues espècies depredadores que lluiten per un mateix territori i on una de les dues és més forta que l'altra (que depèn de si $a>b$ o a l'inrevés), de manera que donades unes poblacions inicials per cada espècie, finalment una de les dues acaba dominant l'altra fins a portar-la a l'extinció (excepte en el cas just en què les poblacions inicials es troben equilibrades de manera precisa sobre la recta que uneix l'origen amb $p$). 
+\par 
+En la situació $a,b<1$ trobem que les poblacions de les espècies sempre tendeixen al punt d'equilibri $p$ (apartat (a)). Això podria ésser un model simplificat de depredador-presa, on una espècie s'alimenta de l'altra. En efecte, si es considera una població molt gran de preses, aleshores els depredadors tindrien molts recursos per poder reproduir-se, augmentant per tant la seva població i, per conseqüent, disminuint la de les preses. En canvi, si hi ha una població massa gran de depredadors, llavors hi haurien pocs recursos disponibles, fent que la població de depredadors disminueixi i permetent així augmentar la de les preses. 
+\par 
+Finalment, tractarem els casos $a>1, b<1$ i $a<1, b>1$ alhora, per simetria. Aquesta situació podria modelitzar casos com els de les espècies invasores, on una població que arriba a un nou territori (massa) ideal per la seva espècie acaba desplaçant altres espècies autòctones, ja sigui per monopolització de recursos o per ser una espècie molt forta i organitzada que acaba amb l'altra. 
+
+\subsubsection*{Apartat c)}
+
+Finalment, estudiem el cas $a=b=1$:
+\begin{equation}
+  \begin{cases}
+    \dot{x}=x(1-x-y) = P_1(x,y) \\
+    \dot{y}=y(1-x-y) = Q_1(x,y)
+  \end{cases}
+\end{equation}
+
+\noindent Com hem fet al primer apartat, d'entrada busquem els punts crítics. 
+%Els punts $(0,0)$, $(0,1)$, $(1,0)$ tornen a ser crítics perquè no depenen de $a$ i $b$. Per al darrer:
+\begin{itemize}
+  \item Si $x=0 \implies y=0$ o $y=1 \implies$ els punts $(0,0)$ i $(0,1)$ són crítics, pertanyent al primer quadrant.
+  \item Si $y=0 \implies x=0$ o $x=1 \implies (1,0)$ també és singular i pertany al primer quadrant.
+  \item Si $1-x-y=0 \iff x+y=1$. És a dir, obtenim una recta de punts crítics.
+\end{itemize} %
+
+\noindent Sempre que hem hagut de treballar amb punts crítics aïllats hiperbòlics hem utilitzat el teorema de Hartman. Ara bé, ara tenim una recta de punts crítics. Podem aplicar-lo llavors? Si recordem, aquest ens diu:
+\begin{thm}
+  Sigui $\dot{x}=X(x)$ un sistema diferencial amb $X$ de classe $C^r, r\geq1$, i sigui p un punt d'equilibri hiperbòlic de $X$. \\
+  Llavors existeix un entorn $U_1$ de p del sistema $X$ i un entorn $U_2$ de $(0,0)$ del sistema $\dot{x}=DX(p)x$ tal que $X|_{U_1}$ és topològicament conjugat a $DX(p)x|_{U_2}$.
+\end{thm}
+
+\noindent Veiem que en cap moment se'ns demana que el punt $p$ hagi de ser aïllat, però sí que ha de ser hiperbòlic. Llavors, mirem si els punts crítics de la recta $x+y=1$ ho són. Per això, si calculem la Jacobiana del sistema obtenim:
+\begin{equation}
+  J(x,y)=
+  \begin{pmatrix}
+    1-2x-y & -x      \\
+    -y     & 1-2y-x 
+  \end{pmatrix}
+\end{equation}
+Si imposem $y=1-x$ aleshores:
+\begin{equation}
+  J(x,1-x)=
+  \begin{pmatrix}
+    -x & -x \\
+    -y & -y
+  \end{pmatrix}=
+  \begin{pmatrix}
+    -x  & -x  \\
+    x-1 & x-1
+  \end{pmatrix} =: T
+\end{equation}
+Fixem-nos que aquesta matriu té rang 1, ja que les columnes són les mateixes. D'aquí podem deduir que un dels valors propis és 0. En efecte, si fem el càlcul explícit:
+\begin{equation}
+  \det\begin{pmatrix}
+    \lambda+x & x         \\
+    y         & \lambda+y
+  \end{pmatrix}=0 \implies \sigma(T)=\{0,-1\} \text{ on hem considerat la relació } y+x=1
+\end{equation}
+d'on trobem que, efectivament, 0 és un valor propi de $T$, i per tant cap dels punts de la recta $x+y=1$ és hiperbòlic. Aquest resultat concorda amb la nostra intuïció atès que, si la matriu $T$ dona el comportament lineal de l'equació diferencial al voltant d'un punt, si aquest està dins la recta de punts crítics, en la direcció de la recta el valor propi ha de ser 0 ja que no hi ha desplaçament. 
+\par 
+Ara bé, com podem llavors estudiar el retrat de fase en el primer quadrant per aquest sistema? Fixem-nos que si $x\neq 0$ i $y\neq 0$ podem igualar:
+\begin{equation}
+  \frac{\dot{x}}{x}=\frac{\dot{y}}{y} \iff \frac{\dd{x}}{x}=\frac{\dd{y}}{y} \implies \ln(x)=\ln(y)+c \implies x=e^cy
+\end{equation}
+on a la primera implicació hem integrat, considerant la constant d'integració. Obtenim per tant una recta que passa per l'origen. Això ens diu que totes les rectes passant per l'origen són invariants ja que $e^c$ pren qualsevol valor positiu, variant $c\in\RR$. En efecte, si ho comprovem posant $f_{l,k}(x,y)=ly-xk=0$:
+$$\frac{\partial f_{l,k}}{\partial x}P_1+\frac{\partial f_{l,k}}{\partial y}Q_1=-kx(1-x-y)+ly(1-x-y)=(1-x-y)(ly-kx)=(1-x-y)f_{l,k}(x,y)$$
+En aquests casos també s'inclouen els eixos $y=0$ i $x=0$, corresponent a $k=0$ i $l=0$, respectivament.
+\\ 
+Abans de fer el retrat de fase, considerem la recta $y=0$: en aquest cas és clar que $\dot{y}=0$ i $\dot{x}=x(1-x)$. Nosaltres considerem, com sempre, el cas $x>0$. Com a conseqüència:
+\begin{itemize}
+  \item Si $0<x<1 \implies \dot{x}>0 \implies $ l'òrbita s'allunya de l'origen de coordenades i s'apropa al punt d'equilibri $(1, 0)$
+  \item Si $x>1 \implies \dot{x}<0 \implies $ l'òrbita s'apropa al punt d'equilibri $(1, 0)$
+\end{itemize}
+És a dir, que el punt d'equilibri $(1,0)$ és atractor per les òrbites dels punts de la recta $y=0$. Ara bé, per continuïtat de les solucions respecte les condicions inicials, deduïm que totes les rectes invariants $ly-kx=0, \ l+k>0, \ lk\geq 0$, tenen el $(0,0)$ com a node repulsor i el punt $(\frac{l}{l+k}, \frac{k}{l+k})$ (intersecció de les rectes $y=1-x$ i $ly-kx=0$ al primer quadrant) com a punt atractor per les òrbites de la recta $ly-kx=0$. 
+
+Amb  això, a més a més, deduïm fàcilment que no poden haver òrbites periòdiques en aquest sistema, ja que si considerem una condició inicial $(p_1, p_2)$ qualsevol, la seva òrbita estarà continguda a la semirecta d'origen $(0,0)$ i passant per la condició inicial. Per tant, al estar l'òrbita continguda en una recta, aquesta no pot ser cap òrbita periòdica, perquè l'$\alpha$-límit sempre serà o bé l'origen de coordenades (al ser un punt singular repulsor), si el punt de les condicions inicicals es troba a l'interior del triangle delimitat pels eixos i la recta de punts invariants (això és el triangle de vèrtex $(0,0)$, $(1,0)$ i $(0,1)$); o bé serà el conjunt buit, si el punt inicial es troba fora del triangle esmentat. 
+\par Finalment, amb tot el que hem estudiat, deduïm que el retrat de fase al primer quadrant és:
+\begin{comment}
+\begin{center}
+  \begin{tikzpicture}[scale=1.6]
+    \draw (0,0)-- (0,3) node[thick, above]{\tiny{$x=0$}};
+    \draw (0,0)--(3,0) node[thick,below]{\tiny{$y=0$}};
+    \node at (0,0) {\textbullet};
+    \node[below right] at (0,0){\tiny{$(0,0)$}};
+    
+    \draw (1, 0)-- (0,1)
+  \end{tikzpicture}
+\end{center}
+\end{comment}
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=0.4]{a1b1.png}
+    \caption{Retrat de fase del sistema en el cas particular de $a=1$ i $b=1$}
+  \end{center}
+\end{figure}
+\newpage
+\section*{Problema 2}
+Considerem el següent sistema diferencial:
+\begin{equation}\label{sist2}
+  \begin{cases}
+    \dot{x}=y-F(x)=:P(x,y) \\
+    \dot{y}=-x=:Q(x,y)
+  \end{cases}
+\end{equation}
+on $F$ és una funció prou regular i $F(0)=0$.
+\subsubsection*{Apartat a)}
+Com que $F$ és prou regular, podem considerar que el domini de definició del sistema és $\RR^2$. Aplicarem el teorema de Bendixson-Dulac generalitzat per demostrar que el sistema diferencial té com a molt un cicle límit. Per això cal trobar una funció de Dulac $B(x,y)$ definida en un obert 2-connex (és a dir, homeomorf a una corona) $R\subset \RR^2$ de manera que $\div(BP,BQ)$ tingui signe constant en $R$ i no sigui idènticament 0 en cap subregió de $R$ d'àrea positiva. Per tal de construir aquesta $B$, seguirem la indicació de l'exerici. Considerem $$B(x,y)=\frac{1}{y^2+a(x)y+b(x)}$$ definida en un obert $R$ a determinar, sent $a,b:R\rightarrow\RR$ funcions diferenciables també a determinar.
+Calculem ara $\div(BP,BQ)$:
+\begin{align*}
+  \div(BP,BQ) & =\pdv{(BP)}{x}+\pdv{(BQ)}{y}                                                                                                              \\
+              & =\frac{-F'(x)(y^2+a(x)y+b(x))-(y-F(x))(a'(x)y+b'(x))}{{\left(y^2+a(x)y+b(x)\right)}^2}+\frac{x(2y+a(x))}{{\left(y^2+a(x)y+b(x)\right)}^2} \\
+              & =\frac{-[F'(x)+a'(x)]y^2-[F'(x)a(x)+b'(x)-F(x)a'(x)-2x]y-F'(x)b(x)+F(x)b'(x)+xa(x)}{{\left(y^2+a(x)y+b(x)\right)}^2}
+\end{align*}
+Ara imposem que els termes multiplicant a $y^2$ i $y$ del numerador de la fracció anterior siguin 0. Per això podem prendre $a(x)=-F(x)$ pel primer terme i llavors el segon esdevé: $$F'(x)a(x)+b'(x)-F(x)a'(x)-2x=-F'(x)F(x)+b'(x)+F(x)F'(x)-2x=b'(x)-2x$$ que és igual a 0 si la funció $b(x)$ és $b(x)=x^2$, per exemple. Tenim ja, doncs, determinades les funcions $a(x)$ i $b(x)$. La divergència del sistema $(BP,BQ)$ esdevé ara:
+$$\div(BP,BQ)=\frac{-F'(x)b(x)+F(x)b'(x)+xa(x)}{{\left(y^2+a(x)y+b(x)\right)}^2}=\frac{-x^2F'(x)+2xF(x)-xF(x)}{{\left(y^2-F(x)y+x^2\right)}^2}=\frac{xF(x)-x^2F'(x)}{{\left(y^2-F(x)y+x^2\right)}^2}$$
+Perquè es compleixi que o bé $\div(BP,BQ)\geq 0$ o bé $\div(BP,BQ)\leq 0$ i no idènticament 0 en cap regió d'àrea positiva, cal que o bé $g(x)\geq 0$ o bé $g(x)\leq 0$ on hem definit $g(x):=xF(x)-x^2F'(x)$.
+% Com que $g(0)=0$ i en un entorn seu no pot ser idènticament nu\lgem a, deduïm ràpidament que el 0 ha de ser un extrem local de $g$ i per tant $$0=g'(0)=g'(x)\big|_{x=0}=F(x)-xF'(x)-x^2F''(x)\big|_{x=0}=F(0)$$
+% d'on deduïm que $F(0)=0$, que és una condició necessària per a $F$ perquè funcioni aquest mètode.
+\\
+Ara estudiem el domini de definició de $B$. Les seves singularitats vindran donades en els punts $(x,y)$ tals que $h(x,y):=y^2-F(x)y+x^2=0$. De nou seguint la indicació trobarem una regió $R$ de definició de $B$ que sigui tot el pla menys un punt. Aquest punt ha de ser l'origen ja que immediatament veiem que $h(0,0)=0$. Estudiem ara els altres zeros de $h$. Com que $h$ té la forma d'un polinomi de segon grau en la variable $y$, $h$ s'anu\lgem arà quan: $$y=\frac{F(x)\pm\sqrt{{F(x)}^2-4x^2}}{2}$$ Com que el domini de definició del sistema és tot $\RR^2$ tenim un parell de solucions per $y\in\CC$ per a cada valor $x\in\RR$. Ara bé, si forcem que només n'hi hagi una de real (l'origen), necessitem que $\Delta(x):={F(x)}^2-4x^2<0$ $\forall x\in \RR\setminus\{0\}$ ja que ja sabem que $\Delta(0)=0$ i obtenim en aquest cas una única solució (doble) per $y$. Finalment, notem que ${F(x)}^2-4x^2<0\iff {F(x)}^2<4x^2\iff \abs{F(x)}<2\abs{x}$. Per tant, imposant les condicions
+$$
+  \begin{cases}
+    xF(x)-x^2F'(x)> 0   & \text{si } x\ne 0 \\
+    \abs{F(x)}<2\abs{x} & \text{si } x\ne 0
+  \end{cases}
+$$
+i suposant també que $F(0)=0$, és suficient per poder aplicar el teorema de Bendixson-Dulac generalitzat i deduir que com a molt podem tenir un cicle límit en el sistema \eqref{sist2}.
+\subsubsection*{Apartat b)}
+Considerem ara la funció $F(x)=x\frac{1-cx^2}{1+cx^2}$ amb $c>0$. Primer de tot notem que $F(0)=0$. Seguint la notació de l'apartat anterior, tenim que $$g(x)=xF(x)-x^2F'(x)=x^2\frac{1-cx^2}{1+cx^2}+x^2\frac{c^2x^4+4cx^2-1}{{(1+cx^2)}^2}=\frac{4cx^4}{{(1+cx^2)}^2}> 0\qquad\text{si }x\ne 0$$ ja que $c>0$. A més $g(x)=0\iff x=0$. Per tant, $g(x)$ només s'anu\lgem a (pensant en el pla $\RR^2$) a la recta $x=0$, que té àrea nu\lgem a. D'altra banda:
+$$\abs{F(x)}=\abs{x\frac{1-cx^2}{1+cx^2}}=\abs{x}\cdot\abs{\frac{1-cx^2}{1+cx^2}}<\abs{x}<2\abs{x}\qquad\text{si }x\ne 0$$
+Per tant, podem aplicar l'apartat anterior i deduir que el sistema té com a molt un cicle límit.
+\end{document}
